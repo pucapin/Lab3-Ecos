@@ -1,0 +1,39 @@
+[
+    {
+        "username": "tiburcio_dog",
+        "pass": "pass",
+        "role": "store",
+        "age": "34",
+        "phone": "1234",
+        "storeId": "001"
+    },
+    {
+        "username": "isabella.svg",
+        "pass": "pass",
+        "role": "client",
+        "age": "23",
+        "phone": "1234",
+        "orders": [
+            {
+             "order_id": "1505"
+            }
+        ]
+
+    },
+    {
+        "username": "cmulett",
+        "pass": "pass",
+        "role": "rider",
+        "age": "23",
+        "phone": "1234",
+        "available": true,
+        "vehicle": "num",
+        "order": [
+           {
+            "order_id": "1510"
+           }
+        ]
+        
+    }
+
+]

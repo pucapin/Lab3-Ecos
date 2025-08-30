@@ -1,0 +1,17 @@
+[
+    {
+        "order_id": "1505",
+        "user_id": "id",
+        "rider_id": "id",
+        "total": 1,
+        "payment_met": "Cash",
+        "origin": "address here",
+        "destination": "address here",             
+        "time": "time left",
+        "products":[
+            {
+                "prod_id": "product id"
+            }
+        ]  
+    }
+]
