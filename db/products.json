@@ -1,12 +1,10 @@
 [
-{
-    "product": {
-    "name": "",
-    "store_id": 1,
-    "price": 0,
-    "description": "",
+  {
+    "name": "Burger",
+    "prodId": 1,
+    "storeId": 1,
+    "price": 100,
+    "description": "Hello",
     "img": ""
-    }
-
-}
+  }
 ]

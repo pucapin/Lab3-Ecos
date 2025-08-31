@@ -1,13 +1,13 @@
 [
 {
     "name": "Tiburcio&Co",
-    "store_id": 1,
+    "storeId": 1,
     "desc": "Bienvenido a la mejor tienda de todas, encuentra tus comidas favoritas preparada por tu chef favorito, Tiburcio ! ",
     "state": false,
     "address": "Cra 121 #47A-123",
     "productos": [
         {
-            "prod_id": "prod Id"
+            "prodId": "prod Id"
         }
     ]
   

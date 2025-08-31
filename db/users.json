@@ -1,27 +1,30 @@
 [
     {
         "username": "tiburcio_dog",
+        "userId": 1,
         "pass": "pass",
         "role": "store",
         "age": "34",
         "phone": "1234",
-        "storeId": "001"
+        "storeId": 1
     },
     {
         "username": "isabella.svg",
+        "userId": 2,
         "pass": "pass",
         "role": "client",
         "age": "23",
         "phone": "1234",
         "orders": [
             {
-             "order_id": "1505"
+             "orderId": "1505"
             }
         ]
 
     },
     {
         "username": "cmulett",
+        "userId": 3,
         "pass": "pass",
         "role": "rider",
         "age": "23",
@@ -30,7 +33,7 @@
         "vehicle": "num",
         "order": [
            {
-            "order_id": "1510"
+            "orderId": "1510"
            }
         ]
         

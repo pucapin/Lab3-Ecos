@@ -1,8 +1,8 @@
 [
     {
-        "order_id": "1505",
-        "user_id": "id",
-        "rider_id": "id",
+        "orderId": "1505",
+        "userId": "id",
+        "riderId": "id",
         "total": 1,
         "payment_met": "Cash",
         "origin": "address here",
