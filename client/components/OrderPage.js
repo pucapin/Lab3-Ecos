@@ -73,33 +73,39 @@ class OrderPage extends HTMLElement {
       e.preventDefault();
       const formData = new FormData(e.target);
       const data = Object.fromEntries(formData.entries());
+      const response = await fetch(`/orders`,);
+      const d = await response.json();
+      console.log(d)
+      const orderNum = d.length + 1;
+
+
       const order = {
-        orderId: 0,
+        orderId: orderNum,
         userId: this.userId,
         riderId: "",
         total: this.sum,
         ...data,
-        products: this.cart
+        products: this.cart,
+        complete: false
       }
       const res = await fetch(`/orders`, {
         method: 'POST',
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(order)
 
-      });
-      if(resd.ok) {
-        const resd = await res.json();
-        console.log("Created new order:", resd);
+      })
+      if(res.ok) {
+        const newOrder = await res.json();
+        console.log("Created new order:", newOrder);
         window.location.href = `/client/order.html`;
       } else {
         console.log("Error creating new order")
       }
-      
-
+    
     })
 
     }
   }
 }
 
-customElements.define("check-page", CheckPage);
+customElements.define("order-page", OrderPage);

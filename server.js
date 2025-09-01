@@ -237,6 +237,12 @@ app.post('/users/:userId/cart/:prodId', (req,res) => {
     })
 
 })
+app.get('/orders', (req, res) => {
+    const orders = readOrders();
+    res.status(200).send({
+        orders
+    })
+})
 // Añadir producto al carrito
 app.post('/orders', (req, res) => {
     const data = req.body;

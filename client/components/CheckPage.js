@@ -73,8 +73,17 @@ class CheckPage extends HTMLElement {
       e.preventDefault();
       const formData = new FormData(e.target);
       const data = Object.fromEntries(formData.entries());
+      const response = await fetch("/orders");
+      const d = await response.json();
+      const orders = d.orders
+      const lastOrder = orders[orders.length - 1]; 
+      const orderNum = lastOrder.orderId + 1; 
+      console.log(orderNum);
+
+
+
       const order = {
-        orderId: 0,
+        orderId: orderNum,
         userId: this.userId,
         riderId: "",
         total: this.sum,
@@ -86,11 +95,10 @@ class CheckPage extends HTMLElement {
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(order)
 
-      });
-      if(resd.ok) {
-        const resd = await res.json();
-        console.log("Created new order:", resd);
-        window.location.href = `/client/order.html`;
+      })
+      if(res.ok) {
+        const newOrder = await res.json();
+        console.log("Created new order:", newOrder);
       } else {
         console.log("Error creating new order")
       }
