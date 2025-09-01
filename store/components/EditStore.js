@@ -5,21 +5,22 @@ class EditStore extends HTMLElement {
   }
 
   connectedCallback() {
-    this.render();
     this.loadStoreData();
   }
 
   async loadStoreData() {
-    const storeId = this.getAttribute("store-id");
+    const storeId = this.getAttribute("storeId");
     const res = await fetch(`/store/${storeId}`);
     const store = await res.json();
+    this.render(store);
 
-    this.shadowRoot.querySelector("#name").value = store.name || "";
-    this.shadowRoot.querySelector("#address").value = store.address || "";
+
   }
 
-  render() {
+  render(store) {
     this.shadowRoot.innerHTML = `
+      <h2 id="open-closed">Text</h2>
+      <button id="state-btn">Open Store</button>
       <form id="editStoreForm">
         <label>
           Store Name:
@@ -31,18 +32,47 @@ class EditStore extends HTMLElement {
           <input type="text" id="address" name="address" required />
         </label>
         <br/>
+        <label>
+          Description:
+          <input type="text" id="desc" name="description" required />
+        </label>
+        <br/>
         <button type="submit">Save</button>
       </form>
-      <button>Open Store</button>
     `;
+
+    this.shadowRoot.querySelector("#name").value = store.name || "";
+    this.shadowRoot.querySelector("#address").value = store.address || "";
+    this.shadowRoot.querySelector("#desc").value = store.desc || "";
+
+    let state = store.state;
+    const openClosed = this.shadowRoot.querySelector("#open-closed");
+    function updateButton() {
+    if(state === false) {
+      openClosed.textContent = "Closed";
+    } else {
+      openClosed.textContent = "Open";
+    }
+    }
+    updateButton();
+    
+    const stateBtn = this.shadowRoot.getElementById('state-btn');
+    stateBtn.addEventListener('click', () => {
+      state = !state;
+      updateButton();
+    })
 
     this.shadowRoot.querySelector("#editStoreForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const storeId = this.getAttribute("store-id");
+      const id = store.storeId
+      console.log(id)
       const formData = new FormData(e.target);
-      const updatedStore = Object.fromEntries(formData.entries());
+      const updatedStore =  {
+        ...Object.fromEntries(formData.entries()),
+        state: state
+      }
 
-      const res = await fetch(`/store/${storeId}`, {
+      const res = await fetch(`/store/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedStore),
@@ -56,6 +86,7 @@ class EditStore extends HTMLElement {
         console.error("Failed to update store");
       }
     });
+
   }
 }
 

@@ -28,6 +28,7 @@ class Dashboard extends HTMLElement {
   
       products.forEach(product => {
         const card = document.createElement("product-card");
+        card.setAttribute('storeId', this.storeId);
         card.data = product;  
         container.appendChild(card);
       });
@@ -46,12 +47,6 @@ class Dashboard extends HTMLElement {
       <button id="add-product">➕ Add Product</button>
       <button id="edit-store">⚙️ Edit Store</button>
       <div id="products-container">
-          <div class="product">
-          <h1>Product name</h1>
-          <img></img>
-          <p>Description</p>
-          <p>Price</p>
-          </div>
       </div>
     </div>
     `;

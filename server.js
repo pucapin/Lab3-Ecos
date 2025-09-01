@@ -66,6 +66,8 @@ app.post("/login", (req, res) => {
     }
 })
 
+// Store methods
+
 app.get('/store/:storeId/products', (req, res) => {
     const { storeId } = req.params
     const products = readProducts();
@@ -76,7 +78,21 @@ app.get('/store/:storeId/products', (req, res) => {
             products: storeProducts
             })
     }
-})
+}) // Get store products
+
+app.get('/store/:storeId', (req, res) => {
+    const { storeId } = req.params;
+    const stores = readStores();
+    const store = stores.find(store => store.storeId == storeId);
+    res.status(200).send({
+        name: store.name,
+        storeId: store.storeId,
+        desc: store.desc,
+        state: store.state,
+        address: store.address,
+        products: store.products
+    })
+}) // Get store
 
 app.post('/store/:storeId/products', (req, res) => {
     const { storeId } = req.params
@@ -93,7 +109,7 @@ app.post('/store/:storeId/products', (req, res) => {
     products.push(newProduct);
     fs.writeFileSync(productsFilePath, JSON.stringify(products, null, 2));
     res.status(201).json(newProduct);
-})
+}) // Añadir nuevo producto
 
 app.put('/store/:storeId', (req, res) => {
      try {
@@ -102,22 +118,117 @@ app.put('/store/:storeId', (req, res) => {
 
     const stores = readStores();
     const store = stores.find((store) => store.storeId == storeId)
-    store = {
-        ...store,
-        ...storeData, //añadir actualizaciones
+    if (!store) {
+      return res.status(404).json({ error: "Store not found" });
     }
+    Object.assign(store, storeData);
 
     fs.writeFileSync(storesFilePath, JSON.stringify(stores, null, 2));
-    res.status(200).json(stores[index]);
+    res.status(200).json(store);
   } catch (err) {
     console.error("Error editing store:", err);
     res.status(500).json({ error: err.message });
   }
+}) // Editar info de la tienda, abrir y cerrarla
+
+app.delete('/store/:storeId/products/:prodId', (req, res) => {
+    try {
+        const { storeId, prodId } = req.params;
+        const products = readProducts();
+        const product = products.find((p) => p.storeId == storeId && prodId == prodId);
+        if(!product) {
+            return res.status(404).send({
+                error: "Product not found"
+            });
+        }
+        const updatedProducts = products.filter(
+            (p) => !(p.storeId == storeId && p.prodId == prodId))
+            // filtrar el producto del array, quitarlo
+        fs.writeFileSync(productsFilePath, JSON.stringify(updatedProducts, null, 2))
+        res.status(200).send({
+            message: "Product deleted",
+            deleted: product
+        })
+
+    } catch (err) {
+        res.status(500).send({
+            error: "Error deleting product"
+        })
+    }
+}) // Eliminar un producto de la tienda
+
+app.get('/stores', (req, res) => {
+    const stores = readStores();
+    res.status(200).send({ 
+        stores
+     })
+}) // Get all stores
+
+app.get('/users/:userId', (req, res) => {
+    const { userId } = req.params;
+    const users = readUsers();
+    const user = users.find(user => user.userId == userId);
+    res.status(200).send( {
+        user
+    })
 })
 
-app.get('/login', (req, res) => {
-    const username = req.body.username
-    res.send({ message: `Hola ${username}, bienvenid@ :3` })
+app.get('/products/:prodId', (req, res) => {
+    const {prodId} = req.params;
+    const products = readProducts();
+    const product = products.find( product => product.prodId == prodId);
+    if(!product) {
+        res.status(400).send({
+            message: "Product not found"
+        })
+    }
+    res.status(200).send({
+        product
+    })
+})
+
+app.delete('/users/:userId/cart/:prodId', (req, res) => {
+    const { userId, prodId} = req.params;
+    const users = readUsers();
+    const user = users.find(user => user.userId == userId);
+    if (!user) {
+    return res.status(404).send({ message: "User not found" });
+    }
+    const item = user.cart.find(i => i.prodId == prodId);
+    if (!item) {
+        return res.status(404).send({ message: "Product not in cart" });
+    }
+
+    user.cart = user.cart.filter(i => i.prodId != prodId);
+    
+    fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
+    
+    res.status(200).send({
+        message: "Item removed",
+        deleted: item
+    })
+
+})
+
+app.post('/users/:userId/cart/:prodId', (req,res) => {
+    const { userId, prodId} = req.params;
+    const products = readProducts();
+    const users = readUsers()
+    const user = users.find(user => user.userId == userId);
+    if (!user) {
+    return res.status(404).send({ message: "User not found" });
+    }
+    const product = products.find(product => product.prodId == prodId);
+    const newProduct = {
+        prodId: product.prodId
+    }
+    user.cart.push(newProduct);
+    fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
+    res.status(200).send({
+        message: "Item added to cart",
+        added: product.prodId
+    })
+
 })
 
 app.post('/register', (req, res) => {
