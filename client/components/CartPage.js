@@ -12,6 +12,7 @@ class CartPage extends HTMLElement {
     }
 
     this.userId = this.user.userId;
+    this.cartnum = 0;
     this.loadUser();
     this.render();
   }
@@ -25,17 +26,36 @@ class CartPage extends HTMLElement {
     if(!container) {
       return
     }
+    const total = this.shadowRoot.getElementById('cart-total')
+    if(!total) {
+      return
+    }
+    total.innerHTML = "";
     container.innerHTML = "";
     if(cart.length === 0) {
       container.innerHTML = `<p>You dont have any items in your cart yet!</p>`
+      total.textContent = "Total: 0"
+      return
     }
+      for (let i = 0; i < cart.length; i++ ) {
+      this.cartnum += cart[i].price;
+    }
+    total.textContent = "Total: " + this.cartnum
+    this.updateButton();
+
     cart.forEach(item => {
         const card = document.createElement("cart-card");
         const id = item.prodId
         card.setAttribute('prodId', id);
         card.setAttribute('userId', this.userId)
         container.appendChild(card);
+
     });
+  }
+
+  updateButton() {
+    const createOrder = this.shadowRoot.getElementById('create-order');
+    createOrder.disabled = this.cartnum === 0;
   }
 
   render() {
@@ -52,8 +72,18 @@ class CartPage extends HTMLElement {
       <div id="item-container">
       </div>
     </div>
+    <div class="cart-pay">
+    <h2 id="cart-total">Total: </h2>
+    <button id="create-order"> Create Order</button>
+    </div>
     `;
+    const createOrder = this.shadowRoot.getElementById('create-order');
+    createOrder.disabled = this.cartnum === 0;
 
+    createOrder.addEventListener('click', () => {
+      window.location.href = `/client/checkout.html`;
+    })
+    
     }
   }
 }

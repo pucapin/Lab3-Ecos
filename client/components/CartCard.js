@@ -15,7 +15,10 @@ class CartCard extends HTMLElement {
     const res = await fetch(`/products/${prodId}`);
     const data = await res.json();
     const product = data.product
-    this.render(product)
+    const resp = await fetch(`/store/${product.storeId}`)
+    const sdata = await resp.json();
+    const storeName = sdata.name;
+    this.render(product, storeName)
     } catch(error) {
     console.error(error);
 
@@ -23,7 +26,7 @@ class CartCard extends HTMLElement {
 
   }
 
-  render(product) {
+  render(product, name) {
     if (!this.shadowRoot) {
       return;
     }
@@ -33,8 +36,8 @@ class CartCard extends HTMLElement {
     <div class="product">
         <h1>${product.name}</h1>
         <img></img>
-        <p>${product.description}</p>
-        <p>${product.price}</p>
+        <p>${name}</p>
+        <p>$${product.price}</p>
     <button id="remove-cart">Remove</button>
     </div>
     `;
@@ -47,6 +50,8 @@ class CartCard extends HTMLElement {
         })
         if(res.ok) {
           this.remove();
+          window.location.reload();
+
         } else {
         const errorMsg = await res.json();
         console.error("Failed to delete product", errorMsg);

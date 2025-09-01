@@ -15,7 +15,12 @@
     "role": "client",
     "age": "23",
     "phone": "1234",
-    "cart": [],
+    "cart": [
+      {
+        "prodId": 1,
+        "price": 100
+      }
+    ],
     "orders": [
       {
         "orderId": 1

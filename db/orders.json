@@ -1,17 +1,16 @@
 [
-    {
-        "orderId": "1505",
-        "userId": "id",
-        "riderId": "id",
-        "total": 1,
-        "payment_met": "Cash",
-        "origin": "address here",
-        "destination": "address here",             
-        "time": "time left",
-        "products":[
-            {
-                "prod_id": "product id"
-            }
-        ]  
-    }
+  {
+    "orderId": 0,
+    "userId": 2,
+    "riderId": "",
+    "total": 100,
+    "address": "Cra 121 #47A-123",
+    "payment-met": "cash",
+    "products": [
+      {
+        "prodId": 1,
+        "price": 100
+      }
+    ]
+  }
 ]

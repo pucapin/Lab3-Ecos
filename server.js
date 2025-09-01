@@ -6,6 +6,7 @@ const fs = require("fs");
 const usersFilePath = path.join(__dirname, "db", "users.json");
 const storesFilePath = path.join(__dirname, "db", "stores.json");
 const productsFilePath = path.join(__dirname, "db", "products.json");
+const ordersFilePath = path.join(__dirname, "db", "orders.json");
 
 const app = express();
 app.use(express.json())
@@ -23,12 +24,16 @@ function readUsers() {
 }
 function readStores() {
     const data = fs.readFileSync(storesFilePath, "utf-8");
-    return JSON.parse(data)
+    return JSON.parse(data);
 }
 function readProducts() {
     const data = fs.readFileSync(productsFilePath, "utf-8");
     console.log(data)
     return JSON.parse(data)
+}
+function readOrders() {
+    const data = fs.readFileSync(ordersFilePath, "utf-8")
+    return JSON.parse(data);
 }
 
 app.post("/login", (req, res) => {
@@ -186,7 +191,7 @@ app.get('/products/:prodId', (req, res) => {
         product
     })
 })
-
+// Get specific product
 app.delete('/users/:userId/cart/:prodId', (req, res) => {
     const { userId, prodId} = req.params;
     const users = readUsers();
@@ -209,6 +214,7 @@ app.delete('/users/:userId/cart/:prodId', (req, res) => {
     })
 
 })
+// Eliminar producto del carrito
 
 app.post('/users/:userId/cart/:prodId', (req,res) => {
     const { userId, prodId} = req.params;
@@ -220,7 +226,8 @@ app.post('/users/:userId/cart/:prodId', (req,res) => {
     }
     const product = products.find(product => product.prodId == prodId);
     const newProduct = {
-        prodId: product.prodId
+        prodId: product.prodId,
+        price: product.price
     }
     user.cart.push(newProduct);
     fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
@@ -230,17 +237,20 @@ app.post('/users/:userId/cart/:prodId', (req,res) => {
     })
 
 })
+// Añadir producto al carrito
+app.post('/orders', (req, res) => {
+    const data = req.body;
+    if(!data) {
+        return res.status(404).send({ message: "Order data not found" });
+    }
+    const orders = readOrders();
+    orders.push(data);
+    fs.writeFileSync(ordersFilePath, JSON.stringify(orders, null, 2));
+    res.status(200).send({
+        message: "New order created",
+        order: data
+    })
 
-app.post('/register', (req, res) => {
-    const username = req.body.username
-    res.send({ message: `Registrado correctamente, hola ${username}, bienvenid@ :3` })
-    users.push(username)
-    console.log(users)
-})
-app.post('/users', (req, res) => {
-    const newUser = req.body
-    users.push(newUser)
-    res.status(201).send(newUser)
 })
 
 app.listen(8080, () => {
