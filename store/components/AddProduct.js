@@ -79,7 +79,7 @@ button:hover {
         <label>Name: <input name="name" required /></label><br/>
         <label>Price: <input type="number" name="price" required /></label><br/>
         <label>Description: <input name="description" /></label><br/>
-        <label>Image URL: <input name="img" /></label><br/>
+        <label>Image: <input type="file" name="image" accept="image/*" /></label><br/>
         <button type="submit">Save</button>
       </form>
     `;
@@ -101,17 +101,12 @@ button:hover {
 
 
       const formData = new FormData(form);
-      const product = Object.fromEntries(formData.entries());
-      product.storeId = storeId;
-      const newProduct = {
-        prodId: prodId,
-        ...product
-      }
+      formData.append("prodId", prodId);
+      formData.append("storeId", storeId);
 
         const res = await fetch(`/store/${storeId}/products`, {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(newProduct)
+            body: formData
         })
 
       const data = await res.json();

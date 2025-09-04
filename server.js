@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path");
+const multer = require("multer");
 const fs = require("fs");
 // File system module que permite leer y escribir archivos
 
@@ -9,6 +10,20 @@ const productsFilePath = path.join(__dirname, "db", "products.json");
 const ordersFilePath = path.join(__dirname, "db", "orders.json");
 
 const app = express();
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/')
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
+        cb(null, uniqueSuffix + path.extname(file.originalname))
+    }
+})
+
+const upload = multer({ storage: storage })
+
 app.use(express.json())
 
 app.use("/login", express.static(path.join(__dirname, "home")))
@@ -98,7 +113,7 @@ app.get('/store/:storeId', (req, res) => {
     })
 }) // Get store
 
-app.post('/store/:storeId/products', (req, res) => {
+app.post('/store/:storeId/products',  upload.single("image"), (req, res) => {
     const { storeId } = req.params
     const productData = req.body
     const products = readProducts()
@@ -108,7 +123,7 @@ app.post('/store/:storeId/products', (req, res) => {
         name: productData.name,
         price: productData.price,
         description: productData.description,
-        img: productData.img,
+        img: req.file ? `/uploads/${req.file.filename}` : null,
     }
     products.push(newProduct);
     fs.writeFileSync(productsFilePath, JSON.stringify(products, null, 2));

@@ -95,9 +95,9 @@ button:hover {
     <div class="product">
     <button id="remove-btn">Remove</button>
         <h1>${product.name}</h1>
-        <img></img>
+        <img src="${product.img}" alt="${product.name}" />
         <p>${product.description}</p>
-        <p>${product.price}</p>
+        <p>$${product.price}</p>
     </div>
     `;
     const storeId = this.getAttribute('storeId')

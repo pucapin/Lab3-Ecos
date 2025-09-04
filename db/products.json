@@ -1,18 +1,10 @@
 [
   {
+    "prodId": "1",
+    "storeId": 1,
     "name": "Burger",
-    "prodId": 0,
-    "storeId": 1,
-    "price": 100,
-    "description": "Hello",
-    "img": ""
-  },
-  {
-    "prodId": 1,
-    "storeId": 1,
-    "name": "Papa Francesa",
-    "price": "500",
-    "description": "Deliciosas papas",
-    "img": ""
+    "price": "100",
+    "description": "Delicious burger with 300g meat and great veggies.",
+    "img": "/uploads/1757026162139-559448741.jpg"
   }
 ]

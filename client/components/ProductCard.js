@@ -103,9 +103,9 @@ class ProductCard extends HTMLElement {
     </style>
     <div class="product">
         <h1>${product.name}</h1>
-        <img></img>
+        <img src="${product.img}" alt="${product.name}" />
         <p>${product.description}</p>
-        <p>${product.price}</p>
+        <p>$${product.price}</p>
     <button id="add-cart">Add to cart</button>
     </div>
     `;
