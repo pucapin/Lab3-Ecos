@@ -35,7 +35,6 @@ function readOrders() {
     const data = fs.readFileSync(ordersFilePath, "utf-8")
     return JSON.parse(data);
 }
-
 app.post("/login", (req, res) => {
     // extraer datos del body
     const { username, password } = req.body
@@ -104,7 +103,7 @@ app.post('/store/:storeId/products', (req, res) => {
     const productData = req.body
     const products = readProducts()
     const newProduct = {
-        prodId: 20,
+        prodId: productData.prodId,
         storeId: parseInt(storeId),
         name: productData.name,
         price: productData.price,
@@ -227,6 +226,7 @@ app.post('/users/:userId/cart/:prodId', (req,res) => {
     const product = products.find(product => product.prodId == prodId);
     const newProduct = {
         prodId: product.prodId,
+        name: product.name,
         price: product.price
     }
     user.cart.push(newProduct);
@@ -236,20 +236,40 @@ app.post('/users/:userId/cart/:prodId', (req,res) => {
         added: product.prodId
     })
 
-})
+}) // Añadir producto al carrito
+
 app.get('/orders', (req, res) => {
     const orders = readOrders();
     res.status(200).send({
         orders
     })
-})
-// Añadir producto al carrito
+}) // Obtener todas las ordenes
+
+app.get('/orders/:riderId', (req, res) => {
+    const { riderId } = req.params;
+    const orders = readOrders();
+    const riderOrders = orders.filter(o => o.riderId == riderId);
+    if (riderOrders.length === 0) {
+        return res.status(404).send({ message: "No orders found for this rider" });
+    }
+    res.status(200).send({ orders: riderOrders });
+}) // Obtener todas las ordenes
 app.post('/orders', (req, res) => {
     const data = req.body;
     if(!data) {
         return res.status(404).send({ message: "Order data not found" });
     }
     const orders = readOrders();
+    const users = readUsers();
+    const user = users.find(u => u.userId == data.userId);
+    if(!user) {
+        return res.status(404).send({ message: "User not found" });
+    } else {
+        user.orders = user.orders || [];
+        user.orders.push(data.orderId);
+        fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
+
+    }
     orders.push(data);
     fs.writeFileSync(ordersFilePath, JSON.stringify(orders, null, 2));
     res.status(200).send({
@@ -258,6 +278,97 @@ app.post('/orders', (req, res) => {
     })
 
 })
+
+app.get('/orders/:userId', (req, res) => {
+  const { userId } = req.params;
+  const orders = readOrders();
+
+  const userOrders = orders.filter(order => order.userId == userId);
+
+  if (userOrders.length === 0) {
+    return res.status(200).send({
+      message: "No orders found",
+      orders: []
+    });
+  }
+
+  res.status(200).send({
+    orders: userOrders
+  });
+}); // Get user orders
+
+app.get("/users/:userId/orders", (req, res) => {
+  const { userId } = req.params;
+  const users = readUsers();
+
+  const user = users.find(u => u.userId == userId);
+
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  res.json(user.orders || []);
+}); // Get rider orders
+
+app.delete('/orders/:orderId', (req, res) => {
+  const { orderId } = req.params;
+  const orders = readOrders();
+
+  const completedOrder = orders.find(o => o.orderId == orderId);
+  if (!completedOrder) {
+    return res.status(404).send({ message: "Order not found" });
+  }
+  const updatedOrders = orders.filter(
+    (o) => !(o.orderId == orderId)
+  );
+  fs.writeFileSync(ordersFilePath, JSON.stringify(updatedOrders, null, 2));
+
+  const users = readUsers(); 
+  const rider = users.find(u => u.userId == completedOrder.riderId);
+  if (rider && rider.orders) {
+    rider.orders = rider.orders.filter(o => o.orderId != orderId);
+  }
+  const user = users.find(u => u.userId == completedOrder.userId);
+  if (user && user.orders) {
+    user.orders = user.orders.filter(o => o.orderId != orderId);
+  }
+  fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
+  res.status(200).send({ message: "Order deleted successfully" });
+});
+
+app.post('/orders/:orderId/assign', (req, res) => {
+  const { orderId } = req.params;
+  const { rider, riderId } = req.body;
+
+  const orders = readOrders();
+  const users = readUsers();
+
+  const order = orders.find(o => o.orderId == orderId);
+  if (!order) return res.status(404).send({ message: "Order not found" });
+
+  if (order.riderId) {
+      return res.status(400).send({ message: "Order already assigned" });
+  }
+
+  order.riderId = riderId;
+  order.rider = rider;
+
+  const newOrder = {
+    orderId: order.orderId
+  }
+
+  const userRider = users.find(u => u.userId == riderId && u.role === "rider");
+  if (userRider) {
+    userRider.orders = userRider.orders || [];
+    userRider.orders.push(newOrder);
+  }
+
+  fs.writeFileSync(ordersFilePath, JSON.stringify(orders, null, 2));
+  fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
+
+  res.status(200).send({ message: "Order assigned successfully", order });
+});
+
 
 app.listen(8080, () => {
     console.log("Servidor corriendo en el puerto 8080 !")

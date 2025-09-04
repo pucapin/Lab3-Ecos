@@ -17,14 +17,14 @@
     "phone": "1234",
     "cart": [
       {
-        "prodId": 1,
+        "prodId": 0,
+        "name": "Burger",
         "price": 100
       }
     ],
     "orders": [
-      {
-        "orderId": 1
-      }
+      0,
+      1
     ]
   },
   {
@@ -36,10 +36,6 @@
     "phone": "1234",
     "available": true,
     "vehicle": "num",
-    "order": [
-      {
-        "orderId": "1510"
-      }
-    ]
+    "orders": []
   }
 ]

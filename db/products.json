@@ -1,10 +1,18 @@
 [
   {
     "name": "Burger",
-    "prodId": 1,
+    "prodId": 0,
     "storeId": 1,
     "price": 100,
     "description": "Hello",
+    "img": ""
+  },
+  {
+    "prodId": 1,
+    "storeId": 1,
+    "name": "Papa Francesa",
+    "price": "500",
+    "description": "Deliciosas papas",
     "img": ""
   }
 ]
