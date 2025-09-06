@@ -6,5 +6,13 @@
     "price": "100",
     "description": "Delicious burger with 300g meat and great veggies.",
     "img": "/uploads/1757026162139-559448741.jpg"
+  },
+  {
+    "prodId": "2",
+    "storeId": 1,
+    "name": "Papitas :3",
+    "price": "120",
+    "description": "Papitas muy deliciosas !",
+    "img": "/uploads/1757054355577-507097631.jpg"
   }
 ]

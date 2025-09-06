@@ -4,7 +4,7 @@
     "storeId": 1,
     "desc": "Bienvenido a la mejor tienda de todas, encuentra tus comidas favoritas preparada por tu chef favorito, Tiburcio ! ",
     "state": true,
-    "address": "Mi casa",
+    "address": "123456-12",
     "products": [
       {
         "prodId": 1

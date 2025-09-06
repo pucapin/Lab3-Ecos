@@ -260,7 +260,7 @@ app.get('/orders', (req, res) => {
     })
 }) // Obtener todas las ordenes
 
-app.get('/orders/:riderId', (req, res) => {
+app.get('/orders/rider/:riderId', (req, res) => {
     const { riderId } = req.params;
     const orders = readOrders();
     const riderOrders = orders.filter(o => o.riderId == riderId);
@@ -277,11 +277,14 @@ app.post('/orders', (req, res) => {
     const orders = readOrders();
     const users = readUsers();
     const user = users.find(u => u.userId == data.userId);
+    const newOrder = {
+        orderId: data.orderId,
+    }
     if(!user) {
         return res.status(404).send({ message: "User not found" });
     } else {
         user.orders = user.orders || [];
-        user.orders.push(data.orderId);
+        user.orders.push(newOrder);
         fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
 
     }
@@ -294,7 +297,7 @@ app.post('/orders', (req, res) => {
 
 })
 
-app.get('/orders/:userId', (req, res) => {
+app.get('/orders/user/:userId', (req, res) => {
   const { userId } = req.params;
   const orders = readOrders();
 

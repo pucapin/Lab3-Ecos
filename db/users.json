@@ -17,15 +17,17 @@
     "phone": "1234",
     "cart": [
       {
-        "prodId": 0,
+        "prodId": "1",
         "name": "Burger",
-        "price": 100
+        "price": "100"
+      },
+      {
+        "prodId": "2",
+        "name": "Papitas :3",
+        "price": "120"
       }
     ],
-    "orders": [
-      0,
-      1
-    ]
+    "orders": []
   },
   {
     "username": "CMulett",

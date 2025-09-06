@@ -16,7 +16,7 @@ class OrderPage extends HTMLElement {
   }
 
   async loadOrders() {
-    const res = await fetch(`/orders/${this.userId}`);
+    const res = await fetch(`/orders/user/${this.userId}`);
     if (!res.ok) {
       console.error("Error fetching orders");
       return;
@@ -127,7 +127,7 @@ class OrderPage extends HTMLElement {
 
     </style>
     <div id="content">
-        <button id="go-back">Go back</button>
+      <button id="go-back">Go back</button>
       <h1>Your Orders</h1>
       ${this.orders.length > 0 ? this.orders.map(order => `
         <div class="order">

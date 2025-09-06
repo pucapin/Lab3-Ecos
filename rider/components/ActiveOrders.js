@@ -18,7 +18,7 @@ class ActiveOrders extends HTMLElement {
   }
 
   async loadOrders() {
-    const response = await fetch(`/orders/${this.riderId}`);
+    const response = await fetch(`/orders/rider/${this.riderId}`);
     const riderOrders = await response.json();
     console.log(riderOrders)
 
